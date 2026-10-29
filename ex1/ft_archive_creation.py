@@ -22,8 +22,12 @@ if __name__ == "__main__":
             print(f"Error opening file '{sys.argv[1]}': {e}")
         finally:
             if opened_file is not None:
-                opened_file.close()
-                print(f"File '{sys.argv[1]}' closed.")
+                try:
+                    opened_file.close()
+                    print(f"File '{sys.argv[1]}' closed.")
+                except OSError as e:
+                    reading_successful = False
+                    print(f"Error closing file '{sys.argv[1]}': {e}")
     if reading_successful:
         print("\nTransform data:")
         print("---\n")
@@ -45,8 +49,12 @@ if __name__ == "__main__":
                 print(f"Error saving data to file '{new_file_name}': {e}")
             finally:
                 if new_file is not None:
-                    new_file.close()
-                    if write_successful:
-                        print(f"Data saved in file '{new_file_name}'.")
+                    try:
+                        new_file.close()
+                    except OSError as e:
+                        write_successful = False
+                        print(f"Error closing file '{new_file_name}': {e}")
+            if write_successful:
+                print(f"Data saved in file '{new_file_name}'.")
         else:
             print("Not saving data.")

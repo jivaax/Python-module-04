@@ -19,5 +19,8 @@ if __name__ == "__main__":
             print(f"Error opening file '{sys.argv[1]}': {e}")
         finally:
             if opened_file is not None:
-                opened_file.close()
-                print(f"File '{sys.argv[1]}' closed.")
+                try:
+                    opened_file.close()
+                    print(f"File '{sys.argv[1]}' closed.")
+                except OSError as e:
+                    print(f"Error closing file '{sys.argv[1]}': {e}")

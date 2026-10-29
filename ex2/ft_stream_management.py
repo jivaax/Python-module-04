@@ -23,8 +23,13 @@ if __name__ == "__main__":
                   f"'{sys.argv[1]}': {e}", file=sys.stderr)
         finally:
             if opened_file is not None:
-                opened_file.close()
-                print(f"File '{sys.argv[1]}' closed.")
+                try:
+                    opened_file.close()
+                    print(f"File '{sys.argv[1]}' closed.")
+                except OSError as e:
+                    reading_successful = False
+                    print("[STDERR] Error closing file "
+                          f"'{sys.argv[1]}': {e}", file=sys.stderr)
     if reading_successful:
         print("\nTransform data:")
         print("---\n")
@@ -53,7 +58,12 @@ if __name__ == "__main__":
                     print("[STDERR] Error writing to file "
                           f"'{new_file_name}': {e}", file=sys.stderr)
                 finally:
-                    new_file.close()
+                    try:
+                        new_file.close()
+                    except OSError as e:
+                        write_successful = False
+                        print("[STDERR] Error closing file "
+                              f"'{new_file_name}': {e}", file=sys.stderr)
 
             if write_successful:
                 print(f"Data saved in file '{new_file_name}'.")
